@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>District SmartFilter | APM Feature Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #f0f0ee;
+    --muted: #888880;
+    --dim: #555550;
+    --accent: #c8f04a;
+    --accent-dim: #8faa30;
+    --accent-bg: rgba(200,240,74,0.08);
+    --red: #ff5c5c;
+    --red-bg: rgba(255,92,92,0.1);
+    --blue: #60a5fa;
+    --blue-bg: rgba(96,165,250,0.1);
+    --purple: #c084fc;
+    --purple-bg: rgba(192,132,252,0.1);
+    --pink: #f472b6;
+    --pink-bg: rgba(244,114,182,0.1);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --r: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,13,13,0.9);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 52px;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 800; font-size: 17px; letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 12px; color: var(--muted); font-weight: 400; letter-spacing: 0.04em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* LAYOUT */
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  .hero {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent-bg);
+    border: 1px solid rgba(200,240,74,0.2);
+    color: var(--accent);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 20px;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 7vw, 68px);
+    line-height: 1.0; letter-spacing: -1.5px;
+    font-weight: 800; margin-bottom: 1.5rem;
+  }
+
+  .hero h1 .accent { color: var(--accent); }
+  .hero h1 .dim { color: var(--dim); }
+
+  .hero-sub {
+    font-size: 17px; color: var(--muted);
+    max-width: 560px; font-weight: 300;
+    line-height: 1.75; margin-bottom: 2rem;
+  }
+
+  .hero-meta { font-size: 12px; color: var(--dim); }
+  .hero-meta strong { color: var(--muted); font-weight: 500; }
+
+  /* DIVIDER */
+  .section-divider { border: none; border-top: 1px solid var(--border); }
+
+  /* SECTION */
+  .section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+
+  .section-tag {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.1; letter-spacing: -0.5px;
+    font-weight: 700; margin-bottom: 1.25rem;
+  }
+
+  h2 .accent { color: var(--accent); }
+
+  h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+
+  p { color: var(--muted); margin-bottom: 1rem; line-height: 1.75; }
+  p:last-child { margin-bottom: 0; }
+
+  /* STATS */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .stat {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 34px; font-weight: 800;
+    line-height: 1; color: var(--text);
+    margin-bottom: 6px;
+  }
+  .stat-num.accent { color: var(--accent); }
+  .stat-num.red { color: var(--red); }
+
+  .stat-label { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* SCENARIO CARDS */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--r); overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .scenario-card {
+    background: var(--surface);
+    padding: 1.5rem;
+  }
+
+  .scenario-icon {
+    font-size: 22px; margin-bottom: 0.75rem;
+  }
+
+  .scenario-card h3 { font-size: 14px; font-family: var(--font-body); font-weight: 600; margin-bottom: 6px; }
+  .scenario-card p { font-size: 13px; margin: 0; color: var(--muted); }
+
+  .scenario-pain {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px; font-weight: 600;
+    color: var(--red); background: var(--red-bg);
+    padding: 3px 8px; border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* CURRENT STATE */
+  .current-state {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.75rem; margin: 2rem 0;
+  }
+
+  .cs-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 1rem;
+  }
+
+  .filter-row {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem;
+  }
+
+  .filter-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 12px; color: var(--muted);
+  }
+
+  .filter-chip.active {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-chip.missing {
+    border: 1px dashed var(--red);
+    color: var(--red); background: var(--red-bg);
+  }
+
+  .cs-note {
+    font-size: 12px; color: var(--dim);
+    font-style: italic;
+  }
+
+  /* SOLUTION STEPS */
+  .solution-steps {
+    display: flex; flex-direction: column;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--r); overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .sol-step {
+    background: var(--surface);
+    padding: 1.75rem 2rem;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 1.25rem; align-items: start;
+  }
+
+  .step-num {
+    width: 32px; height: 32px;
+    background: var(--accent); color: var(--bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 14px; font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .step-tag {
+    display: inline-block;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 3px;
+    margin-bottom: 8px;
+  }
+
+  .step-tag.green { background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(200,240,74,0.2); }
+  .step-tag.blue { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+  .step-tag.pink { background: var(--pink-bg); color: var(--pink); border: 1px solid rgba(244,114,182,0.2); }
+  .step-tag.purple { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(192,132,252,0.2); }
+
+  .step-body h3 { font-size: 15px; font-family: var(--font-display); margin-bottom: 4px; }
+  .step-body p { font-size: 13px; margin: 0; color: var(--muted); line-height: 1.65; }
+
+  /* MOCKUPS */
+  .mockup-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin-top: 2.5rem;
+  }
+
+  .phone-wrap { text-align: center; }
+
+  .phone-label {
+    font-size: 11px; color: var(--dim);
+    margin-bottom: 0.75rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  .phone {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 28px; padding: 18px 12px;
+    margin: 0 auto; max-width: 175px;
+    min-height: 330px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+
+  .phone-screen {
+    background: #0d0d0d;
+    border-radius: 18px; flex: 1;
+    padding: 10px; display: flex;
+    flex-direction: column; gap: 6px; overflow: hidden;
+  }
+
+  .ps-header {
+    font-size: 11px; font-weight: 700;
+    color: var(--text); letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+
+  .ps-sub { font-size: 9px; color: var(--dim); margin-bottom: 4px; }
+
+  .ps-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .ps-chip {
+    background: #1e1e1e; border: 1px solid #2a2a2a;
+    border-radius: 20px; padding: 3px 8px;
+    font-size: 8px; color: #888;
+  }
+
+  .ps-chip.on {
+    background: rgba(200,240,74,0.12);
+    border-color: rgba(200,240,74,0.3);
+    color: var(--accent);
+  }
+
+  .ps-chip.pink-on {
+    background: rgba(244,114,182,0.12);
+    border-color: rgba(244,114,182,0.3);
+    color: var(--pink);
+  }
+
+  .ps-chip.blue-on {
+    background: rgba(96,165,250,0.12);
+    border-color: rgba(96,165,250,0.3);
+    color: var(--blue);
+  }
+
+  .ps-card {
+    background: #1a1a1a; border-radius: 8px;
+    padding: 8px;
+  }
+
+  .ps-card-img {
+    height: 44px; border-radius: 5px;
+    margin-bottom: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .ps-card-title { font-size: 9px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .ps-card-sub { font-size: 8px; color: var(--dim); }
+
+  .ps-badge {
+    display: inline-block;
+    font-size: 7px; font-weight: 700;
+    padding: 2px 5px; border-radius: 3px;
+    margin-top: 3px; letter-spacing: 0.04em;
+  }
+
+  .ps-badge.green { background: rgba(200,240,74,0.15); color: var(--accent); }
+  .ps-badge.pink { background: rgba(244,114,182,0.15); color: var(--pink); }
+  .ps-badge.red { background: rgba(255,92,92,0.15); color: var(--red); }
+
+  .ps-alert {
+    background: rgba(255,92,92,0.1);
+    border: 1px solid rgba(255,92,92,0.2);
+    border-radius: 6px; padding: 6px 8px;
+  }
+
+  .ps-alert-title { font-size: 8px; font-weight: 700; color: var(--red); margin-bottom: 2px; }
+  .ps-alert-body { font-size: 7px; color: #aaa; line-height: 1.4; }
+
+  /* METRICS */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--r); overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .metric-cell {
+    background: var(--surface); padding: 1.5rem;
+  }
+
+  .metric-num {
+    font-family: var(--font-display);
+    font-size: 30px; font-weight: 800;
+    color: var(--text); line-height: 1; margin-bottom: 6px;
+  }
+  .metric-num.accent { color: var(--accent); }
+
+  .metric-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .metric-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 0; }
+
+  /* ROADMAP */
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--r); overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .roadmap-phase { background: var(--surface); padding: 1.5rem; }
+
+  .phase-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 4px;
+  }
+
+  .phase-title {
+    font-family: var(--font-display);
+    font-size: 15px; font-weight: 700;
+    color: var(--text); margin-bottom: 12px;
+  }
+
+  .phase-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+
+  .phase-items li {
+    font-size: 12px; color: var(--muted);
+    padding-left: 14px; position: relative; line-height: 1.5;
+  }
+
+  .phase-items li::before {
+    content: '\2014';
+    position: absolute; left: 0;
+    color: var(--dim); font-size: 10px; top: 2px;
+  }
+
+  /* NORTH STAR */
+  .north-star {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 2rem; margin-top: 2rem;
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    position: relative; overflow: hidden;
+  }
+
+  .north-star::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .ns-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px;
+  }
+
+  .ns-title {
+    font-family: var(--font-display);
+    font-size: 20px; font-weight: 700;
+    margin-bottom: 8px; color: var(--text);
+  }
+
+  .ns-desc { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.65; }
+
+  /* FOOTER */
+  .footer-wrap {
+    padding: 3rem 0;
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 1rem;
+  }
+
+  .footer-wrap p { font-size: 12px; color: var(--dim); margin: 0; }
+  .footer-wrap strong { color: var(--muted); font-weight: 500; }
+
+  .cta-btn {
+    background: var(--accent); color: var(--bg);
+    padding: 10px 22px; border-radius: 6px;
+    font-family: var(--font-display);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.02em; transition: opacity 0.2s;
+  }
+
+  .cta-btn:hover { opacity: 0.85; }
+
+  @media (max-width: 600px) {
+    .mockup-row { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">district<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#screens">Screens</a></li>
+    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+<div class="hero">
+  <div class="hero-tag">&#10024; APM Feature Proposal</div>
+  <h1>District <span class="accent">SmartFilter</span><br><span class="dim">Context-aware</span><br>event discovery</h1>
+  <p class="hero-sub">District lists hundreds of events &mdash; but treats a solo night out, a family outing, and a girls&rsquo; trip to a caf&eacute; all the same. It shouldn&rsquo;t.</p>
+  <p class="hero-meta">By <strong>Nidhi Chauhan</strong> &middot; District APM Application &middot; May 2026</p>
+</div>
+</div>
+
+<!-- STATS -->
+<div class="wrap">
+<div class="section" id="problem" style="padding-top: 48px;">
+  <div class="section-tag">The Gap</div>
+  <h2>Great listings. <span class="accent">Zero context.</span></h2>
+  <p>District does discovery well &mdash; but discovery without context is just noise. When I open the app to find something to do with my 10-year-old cousin, I get the same view as when I&rsquo;m scouting weekend nightlife. There&rsquo;s no way to say &ldquo;make this safe for a kid&rdquo; or &ldquo;find us something aesthetic and low-key.&rdquo;</p>
+
+  <div class="stats-strip">
+    <div class="stat">
+      <div class="stat-num red">0</div>
+      <div class="stat-label">Age-suitability filters in current app</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num red">0</div>
+      <div class="stat-label">Group-context modes (family, girls trip, solo, date)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num accent">3</div>
+      <div class="stat-label">Broad categories: Clubbing, Sports, and &ldquo;Other&rdquo;</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">&#8734;</div>
+      <div class="stat-label">Scroll required to find something actually relevant to you</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SCENARIOS -->
+<div class="wrap">
+<div class="section">
+  <div class="section-tag">Real User Scenarios</div>
+  <h2>Same app. <span class="accent">Completely different needs.</span></h2>
+  <p>These aren&rsquo;t edge cases &mdash; they&rsquo;re the majority of how people actually use District.</p>
+
+  <div class="scenario-grid">
+    <div class="scenario-card">
+      <div class="scenario-icon">&#128106;</div>
+      <h3>Family outing</h3>
+      <p>Out with a 10-year-old cousin. Need age-appropriate events, no alcohol, manageable noise levels.</p>
+      <span class="scenario-pain">No age filter exists</span>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-icon">&#128149;</div>
+      <h3>Girls&rsquo; trip</h3>
+      <p>Need aesthetic caf&eacute;s, safe neighbourhoods, well-lit venues &mdash; not just &ldquo;what&rsquo;s trending.&rdquo;</p>
+      <span class="scenario-pain">No vibe or safety layer</span>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-icon">&#127774;</div>
+      <h3>Solo explorer</h3>
+      <p>Wants offbeat, low-crowd events. Not nightlife. Not sports. Just something interesting.</p>
+      <span class="scenario-pain">Buried under popular picks</span>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-icon">&#127881;</div>
+      <h3>Party planner</h3>
+      <p>Planning a birthday for mixed ages. Needs a venue that works for a 70-year-old and a 7-year-old.</p>
+      <span class="scenario-pain">No group-range filter</span>
+    </div>
+  </div>
+
+  <!-- CURRENT STATE -->
+  <div class="current-state" style="margin-top: 2rem;">
+    <div class="cs-label">&#10007; Current District filter state</div>
+    <div class="filter-row">
+      <div class="filter-chip active">Clubbing</div>
+      <div class="filter-chip active">Sports</div>
+      <div class="filter-chip active">Food</div>
+      <div class="filter-chip active">Music</div>
+      <div class="filter-chip active">Arts</div>
+      <div class="filter-chip missing">Age group &#43;</div>
+      <div class="filter-chip missing">Who I&rsquo;m with &#43;</div>
+      <div class="filter-chip missing">Vibe &#43;</div>
+      <div class="filter-chip missing">Safety &#43;</div>
+    </div>
+    <p class="cs-note">Dashed red = filters users need but don&rsquo;t have. The current taxonomy is content-type only &mdash; it says nothing about who the event is for.</p>
+  </div>
+</div>
+</div>
+
+<!-- SOLUTION -->
+<div class="wrap">
+<div class="section" id="solution">
+  <div class="section-tag">The Solution</div>
+  <h2>SmartFilter &mdash; <span class="accent">who you&rsquo;re with</span> shapes what you see</h2>
+  <p>SmartFilter adds two new dimensions to District&rsquo;s discovery layer: <strong style="color: var(--text);">context</strong> (who am I going with?) and <strong style="color: var(--text);">constraints</strong> (what do I need this experience to be?). Together, they turn a generic listings feed into a personalised recommendation engine &mdash; without rebuilding the backend.</p>
+
+  <div class="solution-steps">
+    <div class="sol-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-tag green">Context layer</div>
+        <h3>Who am I going with?</h3>
+        <p>A one-tap group selector at the top of the discovery screen: Solo &middot; With kids &middot; Girls trip &middot; Date &middot; Mixed group. This single input immediately re-ranks the feed &mdash; family picks surface for &ldquo;With kids,&rdquo; aesthetic and reviewed venues surface for &ldquo;Girls trip.&rdquo; No extra steps required.</p>
+      </div>
+    </div>
+    <div class="sol-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-tag blue">Age filter</div>
+        <h3>Age-appropriate tagging</h3>
+        <p>Events and venues get tagged at the listing level: All ages &middot; 13&#43; &middot; 18&#43; &middot; 21&#43;. These tags come from existing data District likely already holds (liquor licences, event descriptions, venue type). A simple age-range slider surfaces only what&rsquo;s actually suitable &mdash; no more manually reading each listing to check.</p>
+      </div>
+    </div>
+    <div class="sol-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-tag pink">Vibe tags</div>
+        <h3>Aesthetic &amp; safety signals</h3>
+        <p>&ldquo;Aesthetic&rdquo; is real user language &mdash; District should speak it. Vibe tags like Aesthetic &middot; Low-key &middot; Lively &middot; Outdoor &middot; Well-lit surface the qualities that matter but have no home in the current UI. For girls&rsquo; trips specifically, a &ldquo;Reviewed by women&rdquo; badge (sourced from ratings) adds a lightweight trust signal.</p>
+      </div>
+    </div>
+    <div class="sol-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-tag purple">Saved contexts</div>
+        <h3>Remember my usual crew</h3>
+        <p>Users save their common contexts: &ldquo;Weekend with family&rdquo; or &ldquo;Girls night.&rdquo; Next time they open District, one tap loads their preferred filter set. Reduces friction to near-zero for repeat use cases, and creates powerful personalisation data for District&rsquo;s recommendation engine over time.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SCREENS -->
+<div class="wrap">
+<div class="section" id="screens">
+  <div class="section-tag">Product Screens</div>
+  <h2>Before &amp; after <span class="accent">SmartFilter</span></h2>
+
+  <div class="mockup-row">
+    <!-- SCREEN 1: Current -->
+    <div class="phone-wrap">
+      <div class="phone-label">&#10007; Current &mdash; no context</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ps-header">Discover</div>
+          <div class="ps-sub">What&rsquo;s happening near you</div>
+          <div class="ps-chips">
+            <div class="ps-chip on">Clubbing</div>
+            <div class="ps-chip">Sports</div>
+            <div class="ps-chip">Food</div>
+            <div class="ps-chip">Music</div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-card-img" style="background: #1a1a2e;">&#127926;</div>
+            <div class="ps-card-title">Warehouse Rave &mdash; 21&#43;</div>
+            <div class="ps-card-sub">Sat 11pm &middot; Andheri West</div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-card-img" style="background: #1a2a1a;">&#127839;</div>
+            <div class="ps-card-title">Street Food Festival</div>
+            <div class="ps-card-sub">Sun 12pm &middot; Bandra</div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-card-img" style="background: #2a1a1a;">&#127867;</div>
+            <div class="ps-card-title">Bar Crawl &mdash; 18&#43;</div>
+            <div class="ps-card-sub">Fri 8pm &middot; Colaba</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: With kids -->
+    <div class="phone-wrap">
+      <div class="phone-label">&#10003; With kids mode</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ps-header">Discover</div>
+          <div class="ps-chips" style="margin-bottom: 4px;">
+            <div class="ps-chip blue-on">&#128106; With kids</div>
+            <div class="ps-chip">Solo</div>
+            <div class="ps-chip">Date</div>
+          </div>
+          <div class="ps-chips">
+            <div class="ps-chip on">All ages</div>
+            <div class="ps-chip">Under 12</div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-card-img" style="background: #1a2a1a;">&#127795;</div>
+            <div class="ps-card-title">Nature Walk &amp; Storytelling</div>
+            <div class="ps-card-sub">Sun 9am &middot; Sanjay Gandhi NP</div>
+            <div class="ps-badge green">All ages &#10003;</div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-card-img" style="background: #1a1a2a;">&#127912;</div>
+            <div class="ps-card-title">Kids&rsquo; Art Workshop</div>
+            <div class="ps-card-sub">Sat 11am &middot; Juhu</div>
+            <div class="ps-badge green">Ages 5&ndash;14 &#10003;</div>
+          </div>
+          <div class="ps-alert">
+            <div class="ps-alert-title">18&#43; events hidden</div>
+            <div class="ps-alert-body">12 events filtered. Tap to show all.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: Girls trip -->
+    <div class="phone-wrap">
+      <div class="phone-label">&#10003; Girls trip mode</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ps-header">Discover</div>
+          <div class="ps-chips" style="margin-bottom: 4px;">
+            <div class="ps-chip pink-on">&#128149; Girls trip</div>
+            <div class="ps-chip">Solo</div>
+            <div class="ps-chip">Date</div>
+          </div>
+          <div class="ps-chips">
+            <div class="ps-chip on">Aesthetic</div>
+            <div class="ps-chip">Low-key</div>
+            <div class="ps-chip">Outdoor</div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-card-img" style="background: #2a1a2a;">&#9749;</div>
+            <div class="ps-card-title">Rooftop Caf&eacute; &amp; Sunset</div>
+            <div class="ps-card-sub">Daily &middot; Bandra Reclamation</div>
+            <div class="ps-badge pink">&#10029; Aesthetic pick</div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-card-img" style="background: #1a2020;">&#127799;</div>
+            <div class="ps-card-title">Botanical Garden Picnic</div>
+            <div class="ps-card-sub">Sat &middot; Powai</div>
+            <div class="ps-badge pink">&#9792; Reviewed by women</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- METRICS -->
+<div class="wrap">
+<div class="section" id="metrics">
+  <div class="section-tag">Success Metrics</div>
+  <h2>How I&rsquo;d measure if <span class="accent">this works</span></h2>
+
+  <div class="metrics-grid">
+    <div class="metric-cell">
+      <div class="metric-num accent">&#8593;</div>
+      <div class="metric-title">Filter usage rate</div>
+      <div class="metric-desc">% of sessions where a context or age filter is applied. Baseline: near zero. Target: 40%&#43; within 60 days of launch.</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-num accent">&#8593;</div>
+      <div class="metric-title">Click-through rate</div>
+      <div class="metric-desc">Filtered feed CTR vs. default feed. Hypothesis: contextual results drive 2x higher engagement per listing shown.</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-num accent">&#8595;</div>
+      <div class="metric-title">Drop-off on discovery</div>
+      <div class="metric-desc">% of users who open Discover but tap nothing. Current: high. SmartFilter should reduce this meaningfully.</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-num accent">&#8593;</div>
+      <div class="metric-title">Saved contexts</div>
+      <div class="metric-desc">Users who save a context (e.g. &ldquo;With family&rdquo;) show intent to return. Strong retention signal beyond bookings.</div>
+    </div>
+  </div>
+
+  <div class="north-star">
+    <div style="font-size: 26px; flex-shrink: 0;">&#127919;</div>
+    <div>
+      <div class="ns-label">North Star</div>
+      <div class="ns-title">Relevant results on first scroll</div>
+      <p class="ns-desc">The goal isn&rsquo;t more filters &mdash; it&rsquo;s fewer irrelevant results. If a parent with a young kid opens District and the first 5 listings are appropriate for their child, that&rsquo;s the win. SmartFilter succeeds when users stop scrolling past things that were never meant for them and start trusting that District actually knows who they are today.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ROADMAP -->
+<div class="wrap">
+<div class="section" id="roadmap">
+  <div class="section-tag">Roadmap</div>
+  <h2>Phased <span class="accent">rollout</span></h2>
+
+  <div class="roadmap-grid">
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 1 &middot; 2 weeks</div>
+      <div class="phase-title">Age tagging</div>
+      <ul class="phase-items">
+        <li>Tag existing listings: All ages / 13&#43; / 18&#43; / 21&#43;</li>
+        <li>Simple age filter on Discover</li>
+        <li>Hide age-restricted events when filter active</li>
+        <li>No ML required &mdash; rule-based</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 2 &middot; 4 weeks</div>
+      <div class="phase-title">Context modes</div>
+      <ul class="phase-items">
+        <li>Group selector: Solo / Kids / Girls / Date / Mixed</li>
+        <li>Re-rank feed by context rules</li>
+        <li>A/B test vs. default feed</li>
+        <li>Measure CTR &amp; session depth</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 3 &middot; 8 weeks</div>
+      <div class="phase-title">Vibe tags</div>
+      <ul class="phase-items">
+        <li>Aesthetic / Low-key / Lively / Outdoor tags</li>
+        <li>&ldquo;Reviewed by women&rdquo; badge from rating data</li>
+        <li>Vibe filter layer in Discover</li>
+        <li>Surface in event detail pages</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 4 &middot; 12 weeks</div>
+      <div class="phase-title">Saved contexts</div>
+      <ul class="phase-items">
+        <li>Save up to 3 named contexts per user</li>
+        <li>One-tap load on app open</li>
+        <li>Personalisation signals feed recommendation model</li>
+        <li>National rollout if P2/P3 KPIs hold</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="wrap">
+  <div class="footer-wrap">
+    <div>
+      <p><strong>Nidhi Chauhan</strong> &middot; IIT Bombay &middot; Senior Manager, Urban Company</p>
+      <p style="margin-top: 4px;">cnidhhi@gmail.com &middot; &#43;91 9167025732</p>
+    </div>
+    <a href="mailto:cnidhhi@gmail.com" class="cta-btn">Get in touch &#8594;</a>
+  </div>
+</div>
+
+</body>
+</html>
