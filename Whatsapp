@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp — Product Perspective</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; color: #1a1a1a; padding: 32px 24px; }
+  .page { max-width: 720px; margin: 0 auto; }
+  .header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .logo { width: 48px; height: 48px; border-radius: 50%; background: #e8f5e9; display: flex; align-items: center; justify-content: center; }
+  .logo svg { width: 24px; height: 24px; }
+  .header-text h1 { font-size: 20px; font-weight: 600; color: #1a1a1a; }
+  .header-text p { font-size: 13px; color: #888; margin-top: 2px; }
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  .metric { background: #fff; border: 1px solid #e8e8e4; border-radius: 12px; padding: 16px; text-align: center; }
+  .metric-num { font-size: 24px; font-weight: 600; color: #1a1a1a; }
+  .metric-label { font-size: 11px; color: #999; margin-top: 4px; text-transform: uppercase; letter-spacing: .04em; }
+  .section-label { font-size: 11px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+  .card { background: #fff; border: 1px solid #e8e8e4; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; }
+  .why-card { border-left: 3px solid #25D366; border-radius: 0 12px 12px 0; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .chip-green { background: #e8f5e9; color: #2e7d32; }
+  .chip-purple { background: #ede7f6; color: #512da8; }
+  .chip-amber { background: #fff8e1; color: #e65100; }
+  .chip-teal { background: #e0f2f1; color: #00695c; }
+  .chip-blue { background: #e3f2fd; color: #1565c0; }
+  .feature-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .feature-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .feature-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+  .feature-body { font-size: 13px; color: #555; line-height: 1.65; }
+  .insight { font-size: 12px; color: #888; border-left: 2px solid #e0e0e0; padding-left: 10px; margin-top: 10px; font-style: italic; }
+  .chips-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .divider { border: none; border-top: 1px solid #f0f0ec; margin: 24px 0; }
+  .pm-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .impact-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .impact-pill { background: #f7f7f4; border-radius: 8px; padding: 8px 10px; text-align: center; }
+  .impact-pill .val { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+  .impact-pill .lbl { font-size: 11px; color: #999; margin-top: 2px; }
+  .footer { text-align: center; font-size: 12px; color: #bbb; margin-top: 32px; padding-top: 20px; border-top: 1px solid #eee; }
+  @media(max-width:500px){ .metrics{grid-template-columns:1fr 1fr} .impact-row{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>WhatsApp — product perspective</h1>
+      <p>Favourite app · Features that work · What I'd build next</p>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-num">2B+</div>
+      <div class="metric-label">Monthly users</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">3+</div>
+      <div class="metric-label">Generations using it</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">#1</div>
+      <div class="metric-label">Cross-gen adoption</div>
+    </div>
+  </div>
+
+  <p class="section-label">Why it works</p>
+  <div class="card why-card" style="margin-bottom:28px">
+    <p style="font-size:13px;color:#555;line-height:1.7">My parents and grandparents — who never touched Facebook or Instagram — post stories, share voice notes, and stay connected daily. That kind of cross-generational adoption is extraordinarily rare. It tells you the product got something fundamentally right about <strong style="color:#1a1a1a">simplicity and trust.</strong></p>
+  </div>
+
+  <p class="section-label">Features I love</p>
+
+  <div class="card">
+    <div class="feature-header">
+      <div class="feature-icon" style="background:#e0f2f1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00695c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </div>
+      <div>
+        <p class="feature-title">View once on audio</p>
+        <p style="font-size:12px;color:#999">Privacy-first voice notes</p>
+      </div>
+    </div>
+    <p class="feature-body">Knowing the message disappears after one listen removed the anxiety of voice notes being stored forever. It unlocked a behaviour change — I now send voice notes far more freely. Faster conversations, more expressive, without the friction.</p>
+    <p class="insight">A small privacy feature that changed user behaviour completely — that's brilliant product thinking.</p>
+    <div class="chips-row">
+      <span class="chip chip-teal">Privacy</span>
+      <span class="chip chip-green">Behaviour change</span>
+      <span class="chip chip-purple">Trust</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:28px">
+    <div class="feature-header">
+      <div class="feature-icon" style="background:#ede7f6">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#512da8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div>
+        <p class="feature-title">WhatsApp Status</p>
+        <p style="font-size:12px;color:#999">Stories for everyone, not just the social-media crowd</p>
+      </div>
+    </div>
+    <p class="feature-body">What WhatsApp did that no other platform managed is bring the stories format to people who would never call themselves social media users. My parents post on WhatsApp Status every day but wouldn't dream of opening Instagram. The reason is trust — it feels like sharing with family, not performing for the internet.</p>
+    <p class="insight">Watching the elder generation — who once judged their kids for being on social media — now actively expressing their achievements through Status is a profound product outcome.</p>
+    <div class="chips-row">
+      <span class="chip chip-purple">Cross-gen adoption</span>
+      <span class="chip chip-green">Trust</span>
+      <span class="chip chip-amber">Social expression</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <p class="section-label">What I'd build as PM</p>
+
+  <div class="card">
+    <div class="feature-header">
+      <div class="pm-badge" style="background:#fff8e1;color:#e65100">1</div>
+      <div>
+        <p class="feature-title">Scheduled messages</p>
+        <p style="font-size:12px;color:#999">Never miss a moment that matters</p>
+      </div>
+    </div>
+    <p class="feature-body">I've missed wishing my dad good morning on the family group more times than I'd like to admit. I've missed a friend's birthday at midnight. The fix is simple: let users schedule a message to send at a specific time. It already exists in third-party tools but WhatsApp hasn't built it natively.</p>
+    <p class="insight">For students, working professionals, anyone managing relationships across time zones or busy schedules — this is a high-frequency pain point with a straightforward solution.</p>
+    <div class="impact-row">
+      <div class="impact-pill"><div class="val">High</div><div class="lbl">User demand</div></div>
+      <div class="impact-pill"><div class="val">Low</div><div class="lbl">Build effort</div></div>
+      <div class="impact-pill"><div class="val">High</div><div class="lbl">Emotional value</div></div>
+    </div>
+    <div class="chips-row" style="margin-top:12px">
+      <span class="chip chip-amber">Engagement</span>
+      <span class="chip chip-blue">Retention</span>
+      <span class="chip chip-green">Relationship value</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="feature-header">
+      <div class="pm-badge" style="background:#e3f2fd;color:#1565c0">2</div>
+      <div>
+        <p class="feature-title">In-built expense splitting</p>
+        <p style="font-size:12px;color:#999">The infrastructure is already there</p>
+      </div>
+    </div>
+    <p class="feature-body">WhatsApp already has payments via UPI. The next logical step is splitting. Friend groups, family trips, flat-mates, college students — everyone is already coordinating expenses on WhatsApp and then switching to Splitwise or a notes app to track who owes what.</p>
+    <p class="insight">Add an amount, tag who's included, WhatsApp calculates the split, and payment requests go out instantly via WhatsApp Pay. No app switching, no forgotten dues, no awkward "you still owe me" messages.</p>
+    <div class="impact-row">
+      <div class="impact-pill"><div class="val">Payments</div><div class="lbl">Infrastructure ready</div></div>
+      <div class="impact-pill"><div class="val">Groups</div><div class="lbl">Context exists</div></div>
+      <div class="impact-pill"><div class="val">Contacts</div><div class="lbl">Data available</div></div>
+    </div>
+    <div class="chips-row" style="margin-top:12px">
+      <span class="chip chip-teal">Monetisation</span>
+      <span class="chip chip-purple">Super-app play</span>
+      <span class="chip chip-green">Reduce app switching</span>
+    </div>
+  </div>
+
+  <div class="footer">WhatsApp product analysis · Personal perspective</div>
+
+</div>
+</body>
+</html>
