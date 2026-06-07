@@ -1,0 +1,1037 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uber SafeSwitch | Product Feature Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #fafaf8;
+    --uber-black: #000000;
+    --uber-green: #06C167;
+    --uber-green-dark: #048a48;
+    --gray-100: #f5f5f3;
+    --gray-200: #e8e8e4;
+    --gray-400: #9e9e98;
+    --gray-600: #5a5a54;
+    --gray-800: #1f1f1c;
+    --danger: #e53935;
+    --warning: #f59e0b;
+    --font-display: 'DM Serif Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+
+  .nav-logo {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span { color: var(--uber-green); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    color: var(--gray-600);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+
+  /* HERO */
+  .hero {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 80px 2rem 60px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--uber-green);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 7vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 1.5rem;
+    color: var(--black);
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--uber-green);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--gray-600);
+    max-width: 600px;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .hero-meta {
+    font-size: 13px;
+    color: var(--gray-400);
+  }
+
+  .hero-meta strong { color: var(--gray-600); font-weight: 500; }
+
+  /* STATS STRIP */
+  .stats-strip {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .stat {
+    padding: 1rem 1.5rem;
+    border-right: 1px solid var(--gray-200);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    line-height: 1;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+
+  .stat-num.danger { color: var(--danger); }
+  .stat-num.green { color: var(--uber-green-dark); }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--gray-400);
+    line-height: 1.5;
+  }
+
+  .stat-source {
+    font-size: 10px;
+    color: var(--gray-400);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* SECTIONS */
+  section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 2rem;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .section-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+    color: var(--black);
+  }
+
+  h2 em { font-style: italic; color: var(--uber-green-dark); }
+
+  h3 {
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--black);
+  }
+
+  p {
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+    line-height: 1.75;
+  }
+
+  /* INCIDENT TIMELINE */
+  .incident {
+    background: var(--gray-100);
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0;
+    border-left: 3px solid var(--danger);
+  }
+
+  .incident-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--danger);
+    margin-bottom: 1.25rem;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .t-time {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-400);
+    min-width: 52px;
+    padding-top: 2px;
+    font-family: monospace;
+  }
+
+  .t-text {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.55;
+  }
+
+  .t-text strong { color: var(--black); font-weight: 500; }
+
+  .t-text .flag {
+    display: inline-block;
+    background: var(--danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 2px;
+    margin-left: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .t-text .flag.warn {
+    background: var(--warning);
+    color: #fff;
+  }
+
+  /* PROBLEM CARDS */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .problem-card {
+    background: var(--white);
+    padding: 1.5rem;
+  }
+
+  .problem-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 18px;
+  }
+
+  .problem-icon.red { background: #fef2f2; }
+  .problem-icon.amber { background: #fffbeb; }
+  .problem-icon.blue { background: #eff6ff; }
+
+  .problem-card h3 { font-size: 15px; margin-bottom: 6px; }
+  .problem-card p { font-size: 13px; margin: 0; color: var(--gray-600); }
+
+  /* SOLUTION */
+  .solution-steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .solution-step {
+    background: var(--white);
+    padding: 1.75rem 2rem;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    background: var(--black);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .step-body h3 { font-size: 16px; margin-bottom: 4px; }
+  .step-body p { font-size: 14px; margin: 0; color: var(--gray-600); line-height: 1.6; }
+
+  .step-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+
+  .step-tag.green { background: #dcfce7; color: #166534; }
+  .step-tag.blue { background: #dbeafe; color: #1e40af; }
+  .step-tag.purple { background: #ede9fe; color: #6d28d9; }
+
+  /* PHONE MOCKUPS */
+  .mockup-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .phone-wrap {
+    text-align: center;
+  }
+
+  .phone-label {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .phone {
+    background: var(--gray-800);
+    border-radius: 24px;
+    padding: 20px 14px;
+    margin: 0 auto;
+    max-width: 180px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+
+  .phone-screen {
+    background: #1a1a1a;
+    border-radius: 16px;
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  .phone-status {
+    font-size: 9px;
+    color: #888;
+    text-align: right;
+    margin-bottom: 2px;
+  }
+
+  .phone-map {
+    background: #2a2a2a;
+    border-radius: 8px;
+    height: 80px;
+    margin-bottom: 4px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-line {
+    position: absolute;
+    width: 60%;
+    height: 2px;
+    background: var(--uber-green);
+    top: 40%;
+    left: 20%;
+    border-radius: 1px;
+  }
+
+  .map-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--uber-green);
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+
+  .phone-card {
+    background: #252525;
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  .phone-card-title {
+    font-size: 9px;
+    color: #aaa;
+    margin-bottom: 3px;
+  }
+
+  .phone-card-val {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .phone-card-sub {
+    font-size: 9px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .phone-btn {
+    background: var(--uber-green);
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .phone-btn.ghost {
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+  }
+
+  .phone-voice {
+    background: #1e3a2a;
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .voice-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--uber-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .voice-dot svg {
+    width: 10px;
+    height: 10px;
+    fill: #fff;
+  }
+
+  .voice-text {
+    font-size: 9px;
+    color: #9fe8b8;
+    line-height: 1.4;
+  }
+
+  .phone-pill-row {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .phone-pill {
+    background: #2a2a2a;
+    border-radius: 20px;
+    padding: 4px 8px;
+    font-size: 9px;
+    color: #ccc;
+  }
+
+  .phone-pill.active {
+    background: var(--uber-green);
+    color: #fff;
+  }
+
+  .danger-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    border: 2px solid var(--danger);
+    pointer-events: none;
+  }
+
+  /* METRICS */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .metric-cell {
+    background: var(--white);
+    padding: 1.5rem;
+  }
+
+  .metric-num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: var(--black);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .metric-num.green { color: var(--uber-green-dark); }
+
+  .metric-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .metric-desc {
+    font-size: 12px;
+    color: var(--gray-400);
+    line-height: 1.5;
+  }
+
+  /* ROADMAP */
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .roadmap-phase {
+    background: var(--white);
+    padding: 1.5rem;
+  }
+
+  .phase-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 4px;
+  }
+
+  .phase-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 12px;
+  }
+
+  .phase-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .phase-items li {
+    font-size: 12px;
+    color: var(--gray-600);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .phase-items li::before {
+    content: '\2014';
+    position: absolute;
+    left: 0;
+    color: var(--gray-400);
+    font-size: 10px;
+    top: 2px;
+  }
+
+  /* NORTH STAR */
+  .north-star {
+    background: var(--black);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .ns-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .ns-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--uber-green);
+    margin-bottom: 6px;
+  }
+
+  .ns-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+
+  .ns-desc {
+    font-size: 14px;
+    color: #aaa;
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  /* FOOTER */
+  footer {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 1rem;
+  }
+
+  footer p {
+    font-size: 13px;
+    color: var(--gray-400);
+    margin: 0;
+  }
+
+  footer strong { color: var(--gray-600); font-weight: 500; }
+
+  .cta-btn {
+    background: var(--black);
+    color: var(--white);
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: background 0.2s;
+  }
+
+  .cta-btn:hover { background: var(--uber-green-dark); }
+
+  @media (max-width: 600px) {
+    .mockup-row { grid-template-columns: 1fr; }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    .stat { border-right: none; border-bottom: 1px solid var(--gray-200); }
+    .nav-links { display: none; }
+  }
+</style>
+<script defer="" data-domain="ivory-reeba-86.tiiny.site" src="https://analytics.tiiny.site/js/plausible.js"></script></head>
+<body>
+
+<nav>
+  <div class="nav-logo">uber<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#screens">Screens</a></li>
+    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Product Feature Proposal</div>
+  <h1>Uber <em>SafeSwitch</em></h1>
+  <p class="hero-sub">The last 3 minutes of every Uber ride are the most dangerous. Not because of traffic — because of how we notify drivers about their next ride.</p>
+  <p class="hero-meta">By <strong>Nidhi Chauhan</strong> · Uber APM Application · May 2026</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat">
+    <div class="stat-num danger">3 min</div>
+    <div class="stat-label">Average distraction window before ride ends</div>
+    <div class="stat-source">Personal observation, Bangalore peak hours</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">50%</div>
+    <div class="stat-label">Of Bangalore peak-hour vehicles are Uber cabs</div>
+    <div class="stat-source">City traffic density estimate</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num danger">64%</div>
+    <div class="stat-label">Of accidents involve distracted driving</div>
+    <div class="stat-source">NHTSA distraction data</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num green">0</div>
+    <div class="stat-label">Capex required. This is purely a software change</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-tag">The Problem</div>
+  <h2>The last mile is the <em>riskiest</em> mile</h2>
+      <p>I take Uber daily in Bangalore. During peak hours, I've noticed a consistent and alarming pattern: as my ride approaches its destination, the driver's phone lights up with incoming ride requests. What follows is not passive notification — it's active browsing. The driver starts scrolling, comparing, tapping. Eyes off the road. Both hands engaged. The passenger — me — is still in the car.</p>
+  <p>This isn't a driver problem. It's a design problem. Uber's current system optimises for driver efficiency at the cost of passenger safety in the most critical window of every trip.</p>
+
+  <div class="incident">
+    <div class="incident-title">⚠ Real incident — Koramangala to Indiranagar, 8:47 AM</div>
+    <div class="timeline-item">
+      <div class="t-time">T–5:00</div>
+      <div class="t-text">Driver focused on road, normal conversation</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-time">T–3:00</div>
+      <div class="t-text"><strong>Phone buzzes.</strong> Ride requests start appearing. Driver glances at screen. <span class="flag warn">First distraction</span></div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-time">T–2:20</div>
+      <div class="t-text">Driver picks up phone to compare two ride options. Steers one-handed past a signal. <span class="flag">Safety risk</span></div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-time">T–1:40</div>
+      <div class="t-text">Driver misses a speed bump — full attention on phone. I'm jolted in the back seat.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="t-time">T–0:00</div>
+      <div class="t-text">Ride ends. Driver immediately accepts next ride without looking up. <span class="flag">Hazard zone</span></div>
+    </div>
+  </div>
+
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="problem-icon red">🚨</div>
+      <h3>Passenger safety</h3>
+      <p>Driver distraction peaks when the passenger is still in the vehicle and vulnerable.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon amber">⚖️</div>
+      <h3>Wrong incentive design</h3>
+      <p>Drivers are rewarded for fast acceptance but penalised by nothing for distracted driving.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon blue">📱</div>
+      <h3>UX forces bad behaviour</h3>
+      <p>Showing multiple options during motion forces visual comparison — impossible to do safely while driving.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="section-tag">The Solution</div>
+  <h2>SafeSwitch — <em>context-aware</em> ride handoff</h2>
+  <p>SafeSwitch uses three signals Uber already has — GPS speed, ride ETA, and app state — to completely redesign how and when ride requests reach the driver. The fix is not fewer notifications. It's smarter ones.</p>
+
+  <div class="solution-steps">
+    <div class="solution-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-tag green">While moving</div>
+        <h3>AI voice notification — no screen required</h3>
+        <p>When the vehicle is moving above 10 km/h, incoming ride requests are delivered as voice alerts: "New ride — 2.4 km away, ₹180, heading to Koramangala. Say accept or skip." Driver responds hands-free. Zero screen interaction while in motion.</p>
+      </div>
+    </div>
+    <div class="solution-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-tag blue">At signal / stopped</div>
+        <h3>Visual pop-up activates only when vehicle is stationary</h3>
+        <p>GPS speed drops to 0? That's the trigger. The full ride-selection UI appears only when the driver is stopped — at a signal, in traffic, or parked. Visual comparison becomes safe again because the vehicle isn't moving.</p>
+      </div>
+    </div>
+    <div class="solution-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-tag purple">Ride ends</div>
+        <h3>Curated shortlist — not a firehose</h3>
+        <p>The moment the ride completes, instead of showing every available request simultaneously, SafeSwitch surfaces the top 3 options ranked by distance, surge, and driver preference history. One decision, not ten. Faster for the driver, safer for everyone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENS -->
+<section id="screens">
+  <div class="section-tag">Product Screens</div>
+  <h2>How it looks <em>in the app</em></h2>
+  <p>Three states of the driver app — the current broken experience vs. what SafeSwitch replaces it with.</p>
+
+  <div class="mockup-row">
+    <div class="phone-wrap">
+      <div class="phone-label">❌ Current — moving</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="danger-overlay"></div>
+          <div class="phone-status">8:49 AM · 4G</div>
+          <div class="phone-map">
+            <div class="map-line"></div>
+            <div class="map-dot"></div>
+          </div>
+          <div class="phone-card">
+            <div class="phone-card-title">INCOMING RIDES — 4 options</div>
+            <div class="phone-card-val">₹220 · 3.1 km</div>
+            <div class="phone-card-sub">Whitefield · surge 1.4x</div>
+          </div>
+          <div class="phone-card">
+            <div class="phone-card-val">₹180 · 1.8 km</div>
+            <div class="phone-card-sub">Koramangala · no surge</div>
+          </div>
+          <div class="phone-card">
+            <div class="phone-card-val">₹310 · 4.2 km</div>
+            <div class="phone-card-sub">MG Road · surge 1.8x</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone-label">✅ SafeSwitch — moving</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-status">8:49 AM · 4G</div>
+          <div class="phone-map">
+            <div class="map-line"></div>
+            <div class="map-dot"></div>
+          </div>
+          <div class="phone-voice">
+            <div class="voice-dot">
+              <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"></path></svg>
+            </div>
+            <div class="voice-text">"New ride · ₹220 · 3.1 km · Whitefield surge. Say accept or skip."</div>
+          </div>
+          <div class="phone-pill-row" style="margin-top: 6px;">
+            <div class="phone-pill active">🎤 Accept</div>
+            <div class="phone-pill">Skip</div>
+          </div>
+          <div class="phone-card" style="margin-top: 4px;">
+            <div class="phone-card-title">Screen unlocks at signal</div>
+            <div class="phone-card-sub" style="font-size: 10px; color: #888;">Vehicle moving at 32 km/h</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone-label">✅ SafeSwitch — ride ends</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-status">8:53 AM · 4G</div>
+          <div class="phone-card">
+            <div class="phone-card-title" style="color: var(--uber-green);">RIDE COMPLETE · Top 3 for you</div>
+          </div>
+          <div class="phone-card">
+            <div class="phone-card-val">⭐ Best match</div>
+            <div class="phone-card-sub">₹220 · 3.1 km · Whitefield</div>
+          </div>
+          <div class="phone-card">
+            <div class="phone-card-val">Closest</div>
+            <div class="phone-card-sub">₹180 · 1.8 km · Koramangala</div>
+          </div>
+          <div class="phone-card">
+            <div class="phone-card-val">Highest fare</div>
+            <div class="phone-card-sub">₹310 · 4.2 km · MG Road</div>
+          </div>
+          <div class="phone-btn">Accept best match</div>
+          <div class="phone-btn ghost">See all options</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section id="metrics">
+  <div class="section-tag">Success Metrics</div>
+  <h2>How I'd measure if <em>this works</em></h2>
+  <p>Simple signals, first 8 weeks of pilot.</p>
+
+  <div class="metrics-grid">
+    <div class="metric-cell">
+      <div class="metric-num">↓</div>
+      <div class="metric-title">Screen interactions during motion</div>
+      <div class="metric-desc">Primary safety signal. Track taps/swipes on ride-request UI while speed &gt; 10 km/h. Target: 80% reduction vs baseline.</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-num green">↑</div>
+      <div class="metric-title">Driver acceptance rate</div>
+      <div class="metric-desc">Does voice + curated list hurt or help acceptance? Hypothesis: curated top 3 is faster than scrolling through 8 options.</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-num">↓</div>
+      <div class="metric-title">Time-to-accept after ride ends</div>
+      <div class="metric-desc">Curated shortlist should reduce decision time. Target: 30% faster than current firehose experience.</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-num green">↑</div>
+      <div class="metric-title">Passenger safety rating</div>
+      <div class="metric-desc">Track end-of-trip ratings that mention smooth/safe ride. Proxy for actual safety improvement.</div>
+    </div>
+  </div>
+
+  <div class="north-star">
+    <div class="ns-icon">🎯</div>
+    <div>
+      <div class="ns-label">North Star</div>
+      <div class="ns-title">Zero screen interactions while moving</div>
+      <p class="ns-desc">This single number captures everything SafeSwitch is trying to do. Uber completes millions of rides daily in India. If even 30% of ride-end windows go from 4+ screen taps to zero, the safety impact is enormous — and the driver experience is actually better. Faster decisions, less cognitive load, same earnings.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-tag">Roadmap</div>
+  <h2>Phased <em>rollout</em></h2>
+  <p>Start with the highest-signal, lowest-risk change. Layer on intelligence.</p>
+
+  <div class="roadmap-grid">
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 1 · 3 weeks</div>
+      <div class="phase-title">Speed-gated UI</div>
+      <ul class="phase-items">
+        <li>Lock ride-request pop-up when GPS speed &gt; 10 km/h</li>
+        <li>Basic voice TTS alert for incoming rides</li>
+        <li>A/B test in Bangalore &amp; Mumbai</li>
+        <li>Measure screen-tap drop</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 2 · 6 weeks</div>
+      <div class="phase-title">Voice accept/reject</div>
+      <ul class="phase-items">
+        <li>Wake word or button-triggered voice</li>
+        <li>Natural language: "accept", "skip", "next"</li>
+        <li>Fallback to haptic confirm</li>
+        <li>Measure acceptance rate vs control</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 3 · 10 weeks</div>
+      <div class="phase-title">Smart shortlist</div>
+      <ul class="phase-items">
+        <li>ML ranking: distance + surge + driver preference</li>
+        <li>Top 3 curated rides shown at trip end</li>
+        <li>One-tap accept for best match</li>
+        <li>National rollout if P2 metrics hold</li>
+      </ul>
+    </div>
+    <div class="roadmap-phase">
+      <div class="phase-label">Phase 4 · 16 weeks</div>
+      <div class="phase-title">Proactive routing</div>
+      <ul class="phase-items">
+        <li>Predict likely next ride zone from current route</li>
+        <li>Pre-position driver intent before trip ends</li>
+        <li>Driver earnings dashboard with safety score</li>
+        <li>Global rollout framework</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <p>Built by <strong>Nidhi Chauhan</strong> · IIT Bombay · Senior Manager, Urban Company</p>
+    <p style="margin-top: 4px;">cnidhhi@gmail.com · +91 9167025732</p>
+  </div>
+  <a href="mailto:cnidhhi@gmail.com" class="cta-btn">Get in touch →</a>
+</footer>
+
+
+</body></html>
